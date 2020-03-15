@@ -1,6 +1,6 @@
 import sys
 import visual
-import numpy as np
+import pandas as pd
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -14,9 +14,11 @@ class Data_Import(QWidget):
             self.mode = 0
 
         layout = QVBoxLayout()
+        self.source = QTextEdit()
         self.btn0 = QPushButton("本地文件导入")
         self.btn1 = QPushButton("从数据库导入")
         self.btn2 = QPushButton("NEXT")
+        layout.addWidget(self.source)
         layout.addWidget(self.btn0)
         layout.addWidget(self.btn1)
         layout.addWidget(self.btn2)
@@ -27,14 +29,20 @@ class Data_Import(QWidget):
         self.btn2.clicked.connect(self.nextPage)
 
     def open_file(self):
-        f_path,filters = QFileDialog.getOpenFileName(self,"选择文件",'Excel files(*.xlsx , *.xls)')
-        global path
-        path = f_path
-
+        file = QFileDialog.getOpenFileName(self,"选择文件")
+        self.source.append(file[0])
+        if file[0]:
+            data_set = pd.read_csv(file[0])
+            # global data
+            # data = data_set
+            # print(data_set)
         #关闭当前窗口，跳转至下一个窗口
         #self.hide()
         #self.next = visual.Visual()
         #self.next.show()
+        self.dataset = data_set
+        # global data
+        # data = data_set
 
 
 
@@ -42,8 +50,9 @@ class Data_Import(QWidget):
         pass
 
     def nextPage(self):
+
         #self.hide()
-        self.next = visual.Visual(f_path=path)
+        self.next = visual.Visual()
         self.next.show()
 
 if __name__=="__main__":
